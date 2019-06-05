@@ -142,24 +142,10 @@ Parameters:
 
 Mappings:
   RegionMap:
-     us-east-1:
-        AMI:                                      ami-cd0f5cb6
-     us-west-1:
-        AMI:                                      ami-c8c4efa8
-     us-west-2:
-        AMI:                                      ami-6e1a0117
-     sa-east-1:
-        AMI:                                      ami-c1dbadad
-     ap-southeast-2:
-        AMI:                                      ami-d8b3aabb
-     ap-southeast-1:
-        AMI:                                      ami-5ed8433d
-     ap-northeast-1:
-        AMI:                                      ami-84e316e2
-     eu-west-1:
-        AMI:                                      ami-b96a9bc0
-     eu-central-1:
-        AMI:                                      ami-1118b67e
+     cn-north-1:
+        AMI:                                      ami-0c61b061
+     cn-northwest-1:
+        AMI:                                      ami-e5b0a587
 
 Resources:
   BastionEC2WaitCondition:
@@ -216,7 +202,7 @@ Resources:
             - Effect: Allow
               Principal:
                 Service:
-                - 'ec2.amazonaws.com'
+                - 'ec2.amazonaws.com.cn'
               Action:
               - 'sts:AssumeRole'
       Path: /
@@ -276,7 +262,7 @@ Resources:
           sudo apt install python-pip adduser libfontconfig wget curl -y
           curl -sL https://packagecloud.io/gpg.key | sudo apt-key add -
           echo deb "https://packagecloud.io/grafana/stable/debian/ stretch main" | sudo tee /etc/apt/sources.list.d/grafana.list
-          sudo apt-get update && sudo apt-get install grafana -y
+          sudo apt-get update && sudo apt-get install grafana -y --allow-unauthenticated
           sudo systemctl enable grafana-server
           sudo systemctl start grafana-server
           curl -sL https://repos.influxdata.com/influxdb.key | sudo apt-key add -
@@ -292,8 +278,9 @@ Resources:
           sudo curl --insecure 'http://admin:admin@127.0.0.1:3000/api/datasources' -X POST -H 'Content-Type: application/json;charset=UTF-8' --data-binary '{"name":"beegfs_mon_influxdb","type":"influxdb","url":"http://localhost:8086","access":"proxy","isDefault":false,"database":"beegfs_mon","user":"admin","password":"admin"}'
           sudo pip install awscli
           sudo chmod +x /usr/local/bin/aws*
-          sudo pip2 install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-latest.tar.gz
+          sudo pip2 install https://s3.cn-north-1.amazonaws.com.cn/cloudformation-examples/aws-cfn-bootstrap-latest.tar.gz
           sudo chmod +x /usr/local/bin/cfn-*
+          sudo aws configure set region cn-north-1
           sudo aws s3 cp s3://${S3Bucket}/monitor/telegraf.json /tmp/telegraf.json
           sudo aws s3 cp s3://${S3Bucket}/monitor/beegfs.json /tmp/beegfs.json
           sudo aws s3 cp s3://${S3Bucket}/monitor/beegfs-client.json /tmp/beegfs-client.json
@@ -332,7 +319,7 @@ Resources:
         VolSizeStorageUnit: !Ref VolSize
         RAMMountPoint: !Ref RAMMountPointEC2
         ParallelMount: !Ref ParallelMountEC2
-      TemplateURL: !Sub "https://s3.amazonaws.com/${S3Bucket}/deeplearning-worker_server.yml"
+      TemplateURL: !Sub "https://s3.cn-northwest-1.amazonaws.com.cn/${S3Bucket}/deeplearning-worker_server.yml"
       TimeoutInMinutes: 20
 
 Outputs:

@@ -144,24 +144,10 @@ Parameters:
 
 Mappings:
   RegionMap:
-     us-east-1:
-        AMI:                                      ami-cd0f5cb6
-     us-west-1:
-        AMI:                                      ami-c8c4efa8
-     us-west-2:
-        AMI:                                      ami-6e1a0117
-     sa-east-1:
-        AMI:                                      ami-c1dbadad
-     ap-southeast-2:
-        AMI:                                      ami-d8b3aabb
-     ap-southeast-1:
-        AMI:                                      ami-5ed8433d
-     ap-northeast-1:
-        AMI:                                      ami-84e316e2
-     eu-west-1:
-        AMI:                                      ami-b96a9bc0
-     eu-central-1:
-        AMI:                                      ami-1118b67e
+     cn-north-1:
+        AMI:                                      ami-0c61b061
+     cn-northwest-1:
+        AMI:                                      ami-0641f5076e45f7ba5
 
 Resources:
   DLWEC2WaitCondition:
@@ -193,12 +179,13 @@ Resources:
           sudo apt install curl wget python-pip -y
           sudo pip install awscli
           sudo chmod +x /usr/local/bin/aws*
-          sudo pip2 install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-latest.tar.gz
+          sudo pip2 install https://s3.cn-north-1.amazonaws.com.cn/cloudformation-examples/aws-cfn-bootstrap-latest.tar.gz
           sudo chmod +x /usr/local/bin/cfn-*
           curl -sL https://repos.influxdata.com/influxdb.key | sudo apt-key add -
           source /etc/lsb-release
           echo "deb https://repos.influxdata.com/ubuntu xenial stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
           sudo apt update && sudo apt-get install telegraf -y
+          sudo aws configure set region ${AWS::Region}
           sudo aws s3 cp ${S3Bucket}/monitor/telegraf.conf /tmp
           sudo sed -i 's|@INFLUXHOST@|${BastionIP}|g' /tmp/telegraf.conf
           sudo cp /tmp/telegraf.conf /etc/telegraf/
@@ -272,6 +259,7 @@ Resources:
           echo "deb https://repos.influxdata.com/ubuntu xenial stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
           sudo apt update
           sudo apt install telegraf -y
+          sudo aws configure set region ${AWS::Region}
           sudo aws s3 cp ${S3Bucket}/monitor/telegraf.conf /tmp
           sudo sed -i 's|@INFLUXHOST@|${BastionIP}|g' /tmp/telegraf.conf
           sudo cp /tmp/telegraf.conf /etc/telegraf/
